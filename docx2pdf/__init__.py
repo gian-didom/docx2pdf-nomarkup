@@ -10,21 +10,26 @@ try:
 except ImportError:
     from importlib_metadata import version
 
-__version__ = version(__package__)
+try:
+    __version__ = version(__package__)
+except:
+    # Fallback for development environment
+    __version__ = "0.1.8"
 
 
 def windows(paths, keep_active):
     import win32com.client
 
     word = win32com.client.Dispatch("Word.Application")
-    wdFormatPDF = 17
+    wdExportFormatPDF = 17
+    wdExportDocumentContent = 7
 
     if paths["batch"]:
         for docx_filepath in tqdm(sorted(Path(paths["input"]).glob("[!~]*.doc*"))):
             pdf_filepath = Path(paths["output"]) / (str(docx_filepath.stem) + ".pdf")
             doc = word.Documents.Open(str(docx_filepath))
             try:
-                doc.SaveAs(str(pdf_filepath), FileFormat=wdFormatPDF)
+                doc.ExportAsFixedFormat3(str(pdf_filepath), wdExportFormatPDF, False, None, None, None, None, wdExportDocumentContent)
             except:
                 raise
             finally:
@@ -35,7 +40,7 @@ def windows(paths, keep_active):
         pdf_filepath = Path(paths["output"]).resolve()
         doc = word.Documents.Open(str(docx_filepath))
         try:
-            doc.SaveAs(str(pdf_filepath), FileFormat=wdFormatPDF)
+            doc.ExportAsFixedFormat3(str(pdf_filepath), wdExportFormatPDF, False, None, None, None, None, wdExportDocumentContent)
         except:
             raise
         finally:
