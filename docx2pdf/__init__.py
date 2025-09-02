@@ -22,8 +22,9 @@ def windows(paths, keep_active):
 
     word = win32com.client.Dispatch("Word.Application")
     wdExportFormatPDF = 17
-    wdExportDocumentContent = 7
-
+    wdExportDocumentContent = 0
+    wdExportDocumentWithMarkup = 7
+    
     if paths["batch"]:
         for docx_filepath in tqdm(sorted(Path(paths["input"]).glob("[!~]*.doc*"))):
             pdf_filepath = Path(paths["output"]) / (str(docx_filepath.stem) + ".pdf")
