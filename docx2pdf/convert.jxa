@@ -133,7 +133,13 @@ function run(args) {
       const outputFilePath =
         args.outputPath + "/" + file.replace(".docx", ".pdf");
       try {
-        doc.saveAs({ fileName: outputFilePath, fileFormat: "format PDF" });
+        doc.exportAsFixedFormat({
+          outputFileName: args.outputPath,
+          exportFormat: 'PDF',
+          openAfterExport: false,
+          optimizeFor: 'Print',
+          range: 'AllDocument'
+        });
         console.log(
           JSON.stringify({
             input: filepath.toString(),
